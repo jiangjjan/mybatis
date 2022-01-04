@@ -1,4 +1,4 @@
-package tk.model;
+package demo.model;
 
 import lombok.Data;
 

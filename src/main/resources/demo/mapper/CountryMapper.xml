@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="demo.mapper.CountryMapper">
+    <insert id="addOne">
+        insert into country (country_name, country_code)
+        values (#{countryName}, #{countryCode})
+    </insert>
+    <insert id="addOneAndGetAutoPK" keyProperty="id" useGeneratedKeys="true">
+        insert into country (country_name, country_code)
+        values (#{countryName}, #{countryCode})
+    </insert>
+    <insert id="addOneAndGetSelectKey">
+        insert into country (country_name,country_code) values (#{countryName},#{countryCode})
+        <selectKey keyProperty="id" order="AFTER" resultType="Long">
+            select LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <select id="selectAll" resultType="Country">
+        select id, country_name, country_code
+        from country
+    </select>
+    <select id="selectByCountry" resultType="demo.model.Country">
+        <bind name="print" value="@demo.util.StringUtils@print(_parameter)"/>
+        select id, country_name, country_code
+        from country
+        <where>
+            <choose>
+                <when test="id!=null">
+                    and id = #{id}
+                </when>
+                <when test="countryName!=null or  countryCode!=null">
+                    <if test="countryName!=null">
+                        and country_name = #{countryName}
+                    </if>
+                    <if test="countryCode!=null">
+                        and country_code = #{countryCode}
+                    </if>
+                </when>
+                <otherwise>
+                    1=2 #不查询结果,返回null
+                </otherwise>
+            </choose>
+        </where>
+        limit 1
+    </select>
+    <select id="listCountryByNames" resultType="demo.model.Country">
+
+        <bind name="print" value="@demo.util.StringUtils@print(_parameter)"/>
+        select * from country
+        <where>
+            country_name in
+            <foreach collection="names" item="e" close=")" open="(" separator=",">
+                #{e}
+            </foreach>
+        </where>
+    </select>
+    <select id="arrayCountryByNames" resultType="demo.model.Country">
+        <bind name="print" value="@demo.util.StringUtils@print(_parameter)"/>
+        select * from country
+        <where>
+            country_name in
+            <foreach collection="names" item="e" close=")" open="(" separator=",">
+                #{e}
+            </foreach>
+        </where>
+    </select>
+</mapper>
