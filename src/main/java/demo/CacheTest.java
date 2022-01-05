@@ -1,7 +1,10 @@
 package demo;
 
+import demo.mapper.CountryMapper;
+import demo.model.Country;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -9,15 +12,12 @@ import org.apache.log4j.PropertyConfigurator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import demo.mapper.CountryMapper;
-import demo.model.Country;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.Scanner;
 
 @Slf4j
 public class CacheTest {
@@ -31,13 +31,15 @@ public class CacheTest {
 
     @BeforeClass
     public static void before() throws IOException {
-        try (InputStream is = CountryMapperTest.class.getClassLoader().getResourceAsStream("demo\\config\\log4j.properties");) {
+        try (InputStream is = CountryMapperTest.class.getClassLoader().getResourceAsStream("demo\\config\\log4j.properties")) {
             Properties properties = new Properties();
             properties.load(is);
             PropertyConfigurator.configure(properties);
             InputStream resourceAsStream = Resources.getResourceAsStream("demo/config/mybatis-config.xml");
-            sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceAsStream);
-            baseSqlSession = sqlSessionFactory.openSession();
+            if (sqlSessionFactory == null)
+                sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceAsStream);
+            if (baseSqlSession == null)
+                baseSqlSession = sqlSessionFactory.openSession();
             countryMapper = baseSqlSession.getMapper(CountryMapper.class);
         }
     }
@@ -74,7 +76,7 @@ public class CacheTest {
     }
 
     /**
-     * 不同的session 不会使用缓存
+     * 不同的session 不会使用缓存,查看是否执行sql语句可以确认
      */
     @Test
     public void differentSession() {
@@ -98,18 +100,25 @@ public class CacheTest {
      * session 不同时,缓存会导致数据不一致
      */
     @Test
-    public void updateDataUseDifferentSqlSession1() {
+    public void updateDataUseDifferentSqlSession1() throws InterruptedException {
+        System.out.println(baseSqlSession.hashCode());
         //查询一次,加入缓存
         List<Country> countries = countryMapper.selectAll();
-       try( Scanner sc= new Scanner(System.in)){
-           sc.next();
-       }
+        log.info("res {}", countries);
+
+        Thread x = new Thread(() -> {
+            Country p = new Country();
+            p.setCountryCode("xxx");
+            p.setCountryName("xxx");
+            countryMapper.addOne(p);
+            baseSqlSession.commit();
+        });
+
+        x.start();
+        x.join();
+        log.info("res {}", countryMapper.selectAll());
     }
 
-    @Test
-    public void updateDataUseDifferentSqlSession2() {
-
-    }
 
     @AfterClass
     public static void after() {

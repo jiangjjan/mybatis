@@ -10,12 +10,18 @@
     <typeAliases>
         <package name="demo.model"/>
     </typeAliases>
+    <plugins>
+        <plugin interceptor="demo.interceptor.ExecutorQuery">
+            <property name="name1" value="value1"/>
+        </plugin>
+    </plugins>
     <environments default="development">
         <environment id="development">
             <transactionManager type="JDBC"/>
             <dataSource type="POOLED">
                 <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
-                <property name="url" value="jdbc:mysql://localhost:3306/mybatis?useLegacyDatetimeCode=false&amp;serverTimezone=Asia/Shanghai&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;allowMultiQueries=true&amp;useSSL=false&amp;allowPublicKeyRetrieval=true"/>
+                <property name="url"
+                          value="jdbc:mysql://localhost:3306/mybatis?useLegacyDatetimeCode=false&amp;serverTimezone=Asia/Shanghai&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;allowMultiQueries=true&amp;useSSL=false&amp;allowPublicKeyRetrieval=true"/>
                 <property name="username" value="root"/>
                 <property name="password" value="admin"/>
             </dataSource>
@@ -24,4 +30,5 @@
     <mappers>
         <package name="demo.mapper"/>
     </mappers>
+
 </configuration>

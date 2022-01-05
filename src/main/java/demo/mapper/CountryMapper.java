@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectKey;
 import demo.model.Country;
+import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,8 @@ import java.util.Optional;
 public interface CountryMapper {
 
     List<Country> selectAll();
+
+    List<Country> selectAll(RowBounds rowBounds);
 
     /**
      * 查询一个实例,无结果时会返回null,(可以使用Optional包装返回结果),查询返回值为集合时,返回一个空集合
@@ -55,6 +58,7 @@ public interface CountryMapper {
      */
     List<Country> listCountryByNames(@Param("names") List<String> names);
 
+    List<Country> listCountryByNames(@Param("names") List<String> names,RowBounds rowBounds);
     /**
      * 不使用@Param注解,并且参数只有一个数组时, mybatis 会将参数存为map
      * {array=[Ljava.lang.String;@9f5c0d, arg0=[Ljava.lang.String;@9f5c0d}

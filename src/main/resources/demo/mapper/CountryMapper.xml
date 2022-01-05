@@ -18,14 +18,14 @@
             select LAST_INSERT_ID()
         </selectKey>
     </insert>
-    <select id="selectAll" resultType="Country">
+    <select id="selectAll"  resultType="Country">
         select id, country_name, country_code
         from country
     </select>
     <select id="selectByCountry" resultType="demo.model.Country">
         <bind name="print" value="@demo.util.StringUtils@print(_parameter)"/>
         select id, country_name, country_code
-        from country
+        from mybatis.country
         <where>
             <choose>
                 <when test="id!=null">
@@ -49,7 +49,7 @@
     <select id="listCountryByNames" resultType="demo.model.Country">
 
         <bind name="print" value="@demo.util.StringUtils@print(_parameter)"/>
-        select * from country
+        select * from mybatis.country
         <where>
             country_name in
             <foreach collection="names" item="e" close=")" open="(" separator=",">
