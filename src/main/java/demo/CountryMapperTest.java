@@ -11,13 +11,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-public class CountryMapperTest extends BaseTest{
+public class CountryMapperTest extends BaseTest {
 
     @Test
     public void selectAll() throws SQLException {
         DatabaseMetaData metaData = sqlSession.getConnection().getMetaData();
         System.out.println(metaData.getDatabaseProductName());
         List<Country> countries = mapper.selectAll();
+        log.info("countries {}", countries);
+    }
+
+    @Test
+    public void selectMoreParam() {
+        Country c= new Country();
+        c.setCountryCode("CN");
+        List<Country> countries = mapper.selectMoreParam("中国",c);
         log.info("countries {}", countries);
     }
 

@@ -1,9 +1,6 @@
 package demo.mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.SelectKey;
+import org.apache.ibatis.annotations.*;
 import demo.model.Country;
 import org.apache.ibatis.session.RowBounds;
 
@@ -68,4 +65,7 @@ public interface CountryMapper {
      * 使用注解{arg1=asd, names=[Ljava.lang.String;@39f68d, param1=[Ljava.lang.String;@39f68d, param2=asd}
      */
     List<Country> arrayCountryByNames(@Param("names") String[] names);
+
+    @Select("select * from country where country_name = #{name} and country_code = #{arg1.countryCode}")
+    List<Country> selectMoreParam(String name,Country country);
 }

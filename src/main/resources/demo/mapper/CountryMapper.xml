@@ -18,7 +18,7 @@
             select LAST_INSERT_ID()
         </selectKey>
     </insert>
-    <select id="selectAll"  resultType="Country">
+    <select id="selectAll" resultType="Country">
         select id, country_name, country_code
         from country
     </select>
