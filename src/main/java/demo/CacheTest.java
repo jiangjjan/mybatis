@@ -97,7 +97,7 @@ public class CacheTest {
     }
 
     /**
-     * session 不同时,缓存会导致数据不一致
+     * session 不同时,缓存会导致数据不一致,这里需要更改数据的隔离级别
      */
     @Test
     public void updateDataUseDifferentSqlSession1() throws InterruptedException {
