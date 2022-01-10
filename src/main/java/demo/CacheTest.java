@@ -2,9 +2,9 @@ package demo;
 
 import demo.mapper.CountryMapper;
 import demo.model.Country;
+import demo.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -15,9 +15,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 
 @Slf4j
 public class CacheTest {
@@ -96,6 +94,22 @@ public class CacheTest {
 
     }
 
+
+    @Test
+    public void testNull(){
+        User a = new User();
+        a.setDate(new Date());
+        System.out.println("a"+a);
+        User a1 = new User();
+        a1.setDate(new Date(System.currentTimeMillis()-1000000));
+        System.out.println("a1"+a1);
+        List<User> list = new ArrayList<>();
+        
+        list.add(a);
+        list.add(a1);
+        Optional<User> max = list.stream().max(Comparator.comparing(User::getDate));
+        System.out.println(max);
+    }
     /**
      * session 不同时,缓存会导致数据不一致,这里需要更改数据的隔离级别
      */

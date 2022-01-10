@@ -7,6 +7,7 @@
         <setting name="logImpl" value="LOG4J"/>
         <setting name="useActualParamName" value="false"/>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="defaultEnumTypeHandler" value="demo.typehandler.EnumTypeHandler"/>
     </settings>
     <typeAliases>
         <package name="demo.model"/>
